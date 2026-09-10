@@ -13,7 +13,7 @@ export default function Categories() {
   }
 
   return (
-    <section id="categories" className="scroll-mt-24 bg-cream py-16 sm:py-20 lg:py-24">
+    <section id="categories" className="bg-cream py-16 sm:py-20 lg:py-24">
       <Container>
         <SectionHeading
           eyebrow="Plant Categories"

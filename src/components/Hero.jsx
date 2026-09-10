@@ -1,7 +1,7 @@
 import { motion } from 'framer-motion'
 import { useEffect, useState } from 'react'
 import { ArrowUpRight, Leaf, Sparkles } from 'lucide-react'
-import { Container, MagneticButton, PRELOAD_MS, SmartImage } from './ui'
+import { Container, MagneticButton, PRELOAD_MS, SmartImage, formatINR } from './ui'
 import { useShop } from '../context/ShopContext'
 
 const orbitTags = [
@@ -129,7 +129,7 @@ export default function Hero() {
           >
             <p className="text-[10px] uppercase tracking-[0.2em] text-moss">Plant of the week</p>
             <p className="font-display text-base leading-tight text-forest sm:text-lg">Monstera Deliciosa</p>
-            <p className="text-sm text-clay">$48 · air-cleansing</p>
+            <p className="text-sm text-clay">{formatINR(3999)} · air-cleansing</p>
           </motion.div>
         </motion.div>
       </Container>

@@ -4,42 +4,46 @@ import { useEffect, useMemo, useState } from 'react'
 import { plants } from '../data/content'
 import { useShop } from '../context/ShopContext'
 import Checkout, { OrderComplete } from './Checkout'
-import { PRELOAD_MS, SmartImage } from './ui'
+import { PRELOAD_MS, SmartImage, formatINR } from './ui'
 
 export function CartDrawer() {
   const { cart, cartOpen, setCartOpen, updateQty, removeFromCart, cartTotal, clearCart, pushToast } =
     useShop()
   const [step, setStep] = useState('cart')
   const [orderTotal, setOrderTotal] = useState(0)
+  const [orderId, setOrderId] = useState('')
 
   useEffect(() => {
     if (cartOpen) return
     setStep('cart')
     setOrderTotal(0)
+    setOrderId('')
   }, [cartOpen])
 
   const close = () => setCartOpen(false)
 
-  const title = step === 'pay' ? 'Checkout' : step === 'done' ? 'Order placed' : 'Your crate'
+  const title = step === 'pay' ? 'Checkout' : step === 'done' ? 'Order placed' : 'Your cart'
 
   return (
     <Drawer open={cartOpen} onClose={close} title={title}>
       {step === 'done' ? (
-        <OrderComplete total={orderTotal} onClose={close} />
+        <OrderComplete total={orderTotal} orderId={orderId} onClose={close} />
       ) : cart.length === 0 ? (
-        <p className="text-sm text-pine/60">The crate is empty. Wander the catalogue.</p>
+        <p className="text-sm text-pine/60">Your cart is empty. Browse the collection to add a plant.</p>
       ) : step === 'pay' ? (
         <Checkout
           subtotal={cartTotal}
           onBack={() => setStep('cart')}
           onComplete={({ total, method }) => {
+            const id = `SYL${Date.now().toString().slice(-8)}`
             clearCart()
             setOrderTotal(total)
+            setOrderId(id)
             setStep('done')
             pushToast(
               method === 'cod'
-                ? `Order placed · pay $${total} on delivery`
-                : `Payment received · $${total}`,
+                ? `Order ${id} · pay ${formatINR(total)} on delivery`
+                : `Order ${id} · ${formatINR(total)} paid`,
             )
           }}
         />
@@ -51,7 +55,7 @@ export function CartDrawer() {
                 <SmartImage src={item.image} alt="" className="h-16 w-16 rounded-xl object-cover" />
                 <div className="min-w-0 flex-1">
                   <p className="truncate font-display text-forest">{item.name}</p>
-                  <p className="text-xs text-moss">${item.price}</p>
+                  <p className="text-xs text-moss">{formatINR(item.price)}</p>
                   <div className="mt-2 flex items-center gap-2">
                     <QtyBtn onClick={() => updateQty(item.id, item.qty - 1)}>
                       <Minus size={12} />
@@ -76,7 +80,7 @@ export function CartDrawer() {
           <div className="mt-6 border-t border-sand pt-4">
             <div className="mb-3 flex justify-between text-sm">
               <span>Subtotal</span>
-              <span className="font-semibold text-forest">${cartTotal}</span>
+              <span className="font-semibold text-forest">{formatINR(cartTotal)}</span>
             </div>
             <button
               type="button"
@@ -106,7 +110,7 @@ export function WishlistDrawer() {
               <SmartImage src={item.image} alt="" className="h-16 w-16 rounded-xl object-cover" />
               <div className="min-w-0 flex-1">
                 <p className="truncate font-display text-forest">{item.name}</p>
-                <p className="text-xs text-moss">${item.price}</p>
+                <p className="text-xs text-moss">{formatINR(item.price)}</p>
                 <div className="mt-2 flex gap-2">
                   <button
                     type="button"
@@ -175,6 +179,7 @@ export function SearchOverlay() {
       {searchOpen && (
         <motion.div
           className="fixed inset-0 z-[70] grid place-items-start bg-forest/70 px-4 pt-[12vh] backdrop-blur-md"
+          data-lenis-prevent
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
@@ -217,7 +222,7 @@ export function SearchOverlay() {
                           <span className="block font-display text-forest">{plant.name}</span>
                           <span className="text-xs text-moss">{plant.category}</span>
                         </span>
-                        <span className="text-sm text-clay">${plant.price}</span>
+                        <span className="text-sm text-clay">{formatINR(plant.price)}</span>
                       </button>
                       <button
                         type="button"
@@ -261,52 +266,186 @@ export function ToastStack() {
 
 export function Preloader() {
   const [show, setShow] = useState(true)
+  const [progress, setProgress] = useState(0)
 
   useEffect(() => {
-    const t = window.setTimeout(() => setShow(false), PRELOAD_MS)
-    return () => window.clearTimeout(t)
+    const start = performance.now()
+    let frame
+    const tick = (now) => {
+      const p = Math.min((now - start) / PRELOAD_MS, 1)
+      setProgress(p)
+      if (p < 1) frame = requestAnimationFrame(tick)
+      else setShow(false)
+    }
+    frame = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(frame)
   }, [])
+
+  const letters = 'Sylva Atelier'.split('')
+  const pct = Math.round(progress * 100)
 
   return (
     <AnimatePresence>
       {show && (
         <motion.div
-          className="fixed inset-0 z-[90] grid place-items-center bg-forest"
-          exit={{ opacity: 0, filter: 'blur(10px)' }}
-          transition={{ duration: 0.6 }}
+          className="fixed inset-0 z-[90] overflow-hidden bg-forest"
+          key="sylva-preloader"
+          initial={{ clipPath: 'circle(0% at 50% 50%)' }}
+          animate={{ clipPath: 'circle(150% at 50% 50%)' }}
+          exit={{
+            clipPath: 'circle(0% at 50% 50%)',
+            filter: 'blur(12px)',
+          }}
+          transition={{ duration: 0.85, ease: [0.76, 0, 0.24, 1] }}
         >
-          <div className="text-center">
-            <svg viewBox="0 0 80 80" className="mx-auto h-16 w-16">
-              <path
-                d="M40 68c0-22 16-34 34-38C58 34 50 44 47 56c8-18 22-28 39-32C52 24 40 40 40 68"
-                fill="none"
-                stroke="#c9a86a"
-                strokeWidth="2"
-                className="stroke-draw"
-              />
-              <path
-                d="M40 68c0-22-16-34-34-38C22 34 30 44 33 56c-8-18-22-28-39-32C28 24 40 40 40 68"
-                fill="none"
-                stroke="#5c8a63"
-                strokeWidth="2"
-                className="stroke-draw"
-              />
-              <path
-                d="M40 18v50"
-                fill="none"
-                stroke="#f6f1e8"
-                strokeWidth="2"
-                className="stroke-draw"
-              />
-            </svg>
-            <p className="mt-4 font-display text-3xl text-cream">Sylva Atelier</p>
-            <p className="mt-1 text-[11px] uppercase tracking-[0.28em] text-gold">Unfurling</p>
+          <div className="absolute inset-0 grain opacity-40" />
+          <motion.div
+            className="pointer-events-none absolute -left-24 top-16 h-72 w-72 rounded-full bg-moss/30 blur-3xl"
+            animate={{ x: [0, 24, 0], y: [0, -16, 0] }}
+            transition={{ duration: 4.2, repeat: Infinity, ease: 'easeInOut' }}
+          />
+          <motion.div
+            className="pointer-events-none absolute -right-16 bottom-10 h-80 w-80 rounded-full bg-gold/20 blur-3xl"
+            animate={{ x: [0, -18, 0], y: [0, 14, 0] }}
+            transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
+          />
+
+          {orbits.map((leaf, i) => (
+            <motion.svg
+              key={i}
+              viewBox="0 0 24 24"
+              className="pointer-events-none absolute fill-gold/50"
+              style={{ width: leaf.size, height: leaf.size, left: '50%', top: '50%' }}
+              initial={{ opacity: 0, scale: 0.4 }}
+              animate={{
+                opacity: [0, 0.8, 0.8],
+                scale: 1,
+                x: [0, leaf.x],
+                y: [0, leaf.y],
+                rotate: [0, leaf.r],
+              }}
+              transition={{ duration: 1.4, delay: 0.15 + i * 0.08, ease: [0.22, 1, 0.36, 1] }}
+            >
+              <path d="M12 21c0-7 5-11 11-12-5 1-8 4-9 8 2-6 7-9 13-10C14 7 12 12 12 21zM12 21c0-7-5-11-11-12 5 1 8 4 9 8-2-6-7-9-13-10C10 7 12 12 12 21z" />
+            </motion.svg>
+          ))}
+
+          <div className="relative grid h-full place-items-center px-6">
+            <div className="text-center">
+              <div className="relative mx-auto grid h-28 w-28 place-items-center sm:h-32 sm:w-32">
+                <svg className="absolute inset-0 -rotate-90" viewBox="0 0 100 100" aria-hidden>
+                  <circle cx="50" cy="50" r="46" fill="none" stroke="rgba(201,168,106,0.18)" strokeWidth="1.4" />
+                  <motion.circle
+                    cx="50"
+                    cy="50"
+                    r="46"
+                    fill="none"
+                    stroke="#c9a86a"
+                    strokeWidth="1.6"
+                    strokeLinecap="round"
+                    strokeDasharray={289}
+                    animate={{ strokeDashoffset: 289 - 289 * progress }}
+                    transition={{ duration: 0.12, ease: 'linear' }}
+                  />
+                </svg>
+                <motion.div
+                  className="absolute inset-[10%] rounded-full border border-dashed border-gold/35"
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 18, repeat: Infinity, ease: 'linear' }}
+                />
+                <motion.svg
+                  viewBox="0 0 80 80"
+                  className="relative h-16 w-16 sm:h-[4.5rem] sm:w-[4.5rem]"
+                  initial={{ scale: 0.4, rotate: -18, opacity: 0 }}
+                  animate={{ scale: 1, rotate: 0, opacity: 1 }}
+                  transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+                >
+                  <path
+                    d="M40 68c0-22 16-34 34-38C58 34 50 44 47 56c8-18 22-28 39-32C52 24 40 40 40 68"
+                    fill="none"
+                    stroke="#c9a86a"
+                    strokeWidth="2"
+                    className="stroke-draw"
+                    style={{ animationDelay: '0.15s' }}
+                  />
+                  <path
+                    d="M40 68c0-22-16-34-34-38C22 34 30 44 33 56c-8-18-22-28-39-32C28 24 40 40 40 68"
+                    fill="none"
+                    stroke="#5c8a63"
+                    strokeWidth="2"
+                    className="stroke-draw"
+                    style={{ animationDelay: '0.32s' }}
+                  />
+                  <path
+                    d="M40 18v50"
+                    fill="none"
+                    stroke="#f6f1e8"
+                    strokeWidth="2"
+                    className="stroke-draw"
+                    style={{ animationDelay: '0.48s' }}
+                  />
+                </motion.svg>
+              </div>
+
+              <h1 className="mt-7 flex flex-wrap justify-center overflow-hidden font-display text-[2.1rem] leading-none text-cream sm:text-5xl">
+                {letters.map((ch, i) => (
+                  <motion.span
+                    key={`${ch}-${i}`}
+                    className={`inline-block ${ch === ' ' ? 'w-2 sm:w-3' : ''} ${i > 5 ? 'italic text-gold' : ''}`}
+                    initial={{ y: '120%', opacity: 0, rotate: 10, filter: 'blur(8px)' }}
+                    animate={{ y: 0, opacity: 1, rotate: 0, filter: 'blur(0px)' }}
+                    transition={{
+                      delay: 0.42 + i * 0.045,
+                      duration: 0.58,
+                      ease: [0.22, 1, 0.36, 1],
+                    }}
+                  >
+                    {ch === ' ' ? '\u00A0' : ch}
+                  </motion.span>
+                ))}
+              </h1>
+
+              <motion.p
+                className="mt-3 text-[11px] uppercase tracking-[0.34em] text-gold"
+                initial={{ opacity: 0, letterSpacing: '0.6em' }}
+                animate={{ opacity: 1, letterSpacing: '0.34em' }}
+                transition={{ delay: 1.05, duration: 0.8 }}
+              >
+                Nature nursery
+              </motion.p>
+
+              <div className="mx-auto mt-8 h-px w-40 overflow-hidden bg-white/10">
+                <motion.div
+                  className="h-full origin-left bg-gradient-to-r from-sage via-gold to-cream"
+                  initial={{ scaleX: 0 }}
+                  animate={{ scaleX: progress }}
+                  transition={{ duration: 0.12, ease: 'linear' }}
+                />
+              </div>
+              <motion.p
+                className="mt-3 font-display text-sm text-sage"
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ delay: 0.6 }}
+              >
+                Unfurling {pct}%
+              </motion.p>
+            </div>
           </div>
         </motion.div>
       )}
     </AnimatePresence>
   )
 }
+
+const orbits = [
+  { x: -120, y: -70, r: -24, size: 18 },
+  { x: 118, y: -62, r: 18, size: 14 },
+  { x: -96, y: 86, r: 12, size: 16 },
+  { x: 108, y: 78, r: -16, size: 13 },
+  { x: 8, y: -128, r: 26, size: 12 },
+  { x: -8, y: 124, r: -10, size: 15 },
+]
 
 export function CustomCursor() {
   const [pos, setPos] = useState({ x: -40, y: -40 })
@@ -391,29 +530,6 @@ export function AmbientLeaves() {
   )
 }
 
-export function ScrollVine() {
-  const [p, setP] = useState(0)
-
-  useEffect(() => {
-    const onScroll = () => {
-      const max = document.documentElement.scrollHeight - window.innerHeight
-      setP(max > 0 ? window.scrollY / max : 0)
-    }
-    onScroll()
-    window.addEventListener('scroll', onScroll, { passive: true })
-    return () => window.removeEventListener('scroll', onScroll)
-  }, [])
-
-  return (
-    <div className="pointer-events-none fixed left-3 top-[18%] z-40 hidden h-[64vh] w-1 overflow-hidden rounded-full bg-sand/70 2xl:block">
-      <motion.div
-        className="w-full origin-top rounded-full bg-gradient-to-b from-gold via-leaf to-moss"
-        style={{ height: `${Math.max(p * 100, 4)}%` }}
-      />
-    </div>
-  )
-}
-
 export function Marquee() {
   const words = [
     'Monstera',
@@ -472,6 +588,7 @@ function Drawer({ open, onClose, title, children }) {
             exit={{ x: '100%' }}
             transition={{ type: 'spring', stiffness: 280, damping: 32 }}
             className="fixed inset-y-0 right-0 z-[65] flex w-[min(100%,420px)] flex-col bg-cream p-5 shadow-2xl sm:p-6"
+            data-lenis-prevent
           >
             <div className="mb-5 flex items-center justify-between">
               <h3 className="font-display text-2xl text-forest">{title}</h3>

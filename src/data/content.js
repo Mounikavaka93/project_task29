@@ -54,7 +54,7 @@ export const plants = [
     id: 'monstera-deliciosa',
     name: 'Monstera Deliciosa',
     category: 'Indoor Plants',
-    price: 48,
+    price: 3999,
     rating: 4.9,
     image:
       'https://images.unsplash.com/photo-1614594975525-e45190c55d0b?auto=format&fit=crop&w=800&q=80',
@@ -64,7 +64,7 @@ export const plants = [
     id: 'fiddle-leaf-fig',
     name: 'Fiddle Leaf Fig',
     category: 'Indoor Plants',
-    price: 72,
+    price: 5999,
     rating: 4.7,
     image:
       'https://images.unsplash.com/photo-1459411552884-841db9b3cc2a?auto=format&fit=crop&w=800&q=80',
@@ -74,7 +74,7 @@ export const plants = [
     id: 'snake-laurentii',
     name: 'Snake Plant Laurentii',
     category: 'Indoor Plants',
-    price: 32,
+    price: 2699,
     rating: 4.8,
     image:
       'https://images.unsplash.com/photo-1593691509543-c55fb32d8de5?auto=format&fit=crop&w=800&q=80',
@@ -84,7 +84,7 @@ export const plants = [
     id: 'bird-of-paradise',
     name: 'Bird of Paradise',
     category: 'Decorative Plants',
-    price: 86,
+    price: 6999,
     rating: 4.6,
     image:
       'https://images.unsplash.com/photo-1632207691143-643e2a9a9361?auto=format&fit=crop&w=800&q=80',
@@ -94,7 +94,7 @@ export const plants = [
     id: 'olive-grove',
     name: 'Dwarf Olive Tree',
     category: 'Outdoor Plants',
-    price: 95,
+    price: 7899,
     rating: 4.8,
     image:
       'https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=800&q=80',
@@ -104,7 +104,7 @@ export const plants = [
     id: 'japanese-maple',
     name: 'Japanese Maple',
     category: 'Outdoor Plants',
-    price: 110,
+    price: 8999,
     rating: 4.9,
     image:
       'https://images.unsplash.com/photo-1477414348463-c0eb7f1359b6?auto=format&fit=crop&w=800&q=80',
@@ -114,7 +114,7 @@ export const plants = [
     id: 'gardenia-bloom',
     name: 'Gardenia Bloom',
     category: 'Flowering Plants',
-    price: 38,
+    price: 3199,
     rating: 4.5,
     image:
       'https://images.unsplash.com/photo-1490750967868-88aa4486c946?auto=format&fit=crop&w=800&q=80',
@@ -124,7 +124,7 @@ export const plants = [
     id: 'english-lavender',
     name: 'English Lavender',
     category: 'Flowering Plants',
-    price: 24,
+    price: 1999,
     rating: 4.8,
     image:
       'https://images.unsplash.com/photo-1499002238440-d264edd596ec?auto=format&fit=crop&w=800&q=80',
@@ -134,7 +134,7 @@ export const plants = [
     id: 'peace-lily',
     name: 'Peace Lily',
     category: 'Flowering Plants',
-    price: 28,
+    price: 2299,
     rating: 4.7,
     image:
       'https://images.unsplash.com/photo-1545241047-6083a3684587?auto=format&fit=crop&w=800&q=80',
@@ -144,7 +144,7 @@ export const plants = [
     id: 'echeveria',
     name: 'Echeveria Rosette',
     category: 'Succulents',
-    price: 18,
+    price: 1499,
     rating: 4.9,
     image:
       'https://images.unsplash.com/photo-1487070183336-b863922373d4?auto=format&fit=crop&w=800&q=80',
@@ -154,7 +154,7 @@ export const plants = [
     id: 'jade-plant',
     name: 'Jade Plant',
     category: 'Succulents',
-    price: 22,
+    price: 1849,
     rating: 4.6,
     image:
       'https://images.unsplash.com/photo-1512428813834-c702c7702b78?auto=format&fit=crop&w=800&q=80',
@@ -164,7 +164,7 @@ export const plants = [
     id: 'string-pearls',
     name: 'String of Pearls',
     category: 'Succulents',
-    price: 20,
+    price: 1699,
     rating: 4.8,
     image:
       'https://images.unsplash.com/photo-1551884170-09fb70a3a2ed?auto=format&fit=crop&w=800&q=80',
@@ -174,7 +174,7 @@ export const plants = [
     id: 'aloe-vera',
     name: 'Aloe Vera',
     category: 'Medicinal Plants',
-    price: 16,
+    price: 1349,
     rating: 4.9,
     image:
       'https://images.unsplash.com/photo-1509423350716-97f9360b4e09?auto=format&fit=crop&w=800&q=80',
@@ -184,7 +184,7 @@ export const plants = [
     id: 'holy-basil',
     name: 'Tulsi Holy Basil',
     category: 'Medicinal Plants',
-    price: 14,
+    price: 1199,
     rating: 4.7,
     image:
       'https://images.unsplash.com/photo-1471193945509-9ad0617afabf?auto=format&fit=crop&w=800&q=80',
@@ -194,7 +194,7 @@ export const plants = [
     id: 'calathea',
     name: 'Calathea Orbifolia',
     category: 'Decorative Plants',
-    price: 42,
+    price: 3499,
     rating: 4.6,
     image:
       'https://images.unsplash.com/photo-1592150621744-aca64f48394a?auto=format&fit=crop&w=800&q=80',
@@ -204,7 +204,7 @@ export const plants = [
     id: 'rubber-plant',
     name: 'Burgundy Rubber Plant',
     category: 'Decorative Plants',
-    price: 54,
+    price: 4499,
     rating: 4.8,
     image:
       'https://images.unsplash.com/photo-1545165375-1b744b9ed444?auto=format&fit=crop&w=800&q=80',
@@ -336,6 +336,15 @@ export const marqueeWords = [
   'Seasonal bloom',
   'Wild & well-kept',
 ]
+
+export const studio = {
+  name: 'Sylva Atelier',
+  line1: 'Glasshouse No. 4, Sarjapur Road',
+  line2: 'Bengaluru, Karnataka 560035',
+  phone: '+91 80 4712 0188',
+  email: 'hello@sylvatelier.com',
+  hours: 'Tue–Sun · 9:00 am – 6:00 pm IST',
+}
 
 export const navLinks = [
   { label: 'Home', href: '#home' },

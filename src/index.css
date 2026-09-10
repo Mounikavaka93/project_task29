@@ -19,17 +19,31 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+html.lenis,
+html.lenis-smooth {
+  scroll-behavior: auto;
+}
+
+html::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 section[id] {
-  scroll-margin-top: 5.5rem;
+  scroll-margin-top: 0;
 }
 
 html,
 body {
-  overflow-x: clip;
-  max-width: 100%;
   width: 100%;
+  max-width: 100%;
 }
 
 #root,
@@ -47,17 +61,35 @@ button {
 
 body {
   margin: 0;
+  overflow: visible;
   font-family: var(--font-sans);
   background: var(--color-cream);
   color: var(--color-ink);
   -webkit-font-smoothing: antialiased;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+body::-webkit-scrollbar {
+  display: none;
 }
 
 #root {
   min-height: 100svh;
   width: 100%;
   max-width: 100%;
-  overflow-x: clip;
+  overflow: visible;
+}
+
+* {
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+*::-webkit-scrollbar {
+  display: none;
+  width: 0;
+  height: 0;
 }
 
 ::selection {

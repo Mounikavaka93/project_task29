@@ -1,5 +1,5 @@
 import { Mail } from 'lucide-react'
-import { categories, navLinks } from '../data/content'
+import { categories, navLinks, studio } from '../data/content'
 import { useShop } from '../context/ShopContext'
 import { Container } from './ui'
 
@@ -105,17 +105,18 @@ export default function Footer() {
         <div>
           <p className="mb-4 text-xs uppercase tracking-[0.2em] text-gold">Contact</p>
           <ul className="space-y-2 text-sm leading-relaxed">
-            <li>18 River Meadow Lane</li>
-            <li>Glasshouse No. 4</li>
-            <li>+1 (415) 555-0188</li>
-            <li>hello@sylvatelier.com</li>
-            <li>Open Tue–Sun, 9am–6pm</li>
+            <li>{studio.line1}</li>
+            <li>{studio.line2}</li>
+            <li>{studio.phone}</li>
+            <li>{studio.email}</li>
+            <li>{studio.hours}</li>
           </ul>
         </div>
       </Container>
       <div className="border-t border-white/10">
-        <Container className="py-5 text-center text-xs text-sage/70">
-          © {year} Sylva Atelier. Grown, not manufactured.
+        <Container className="flex flex-col items-center justify-between gap-2 py-5 text-center text-xs text-sage/70 sm:flex-row sm:text-left">
+          <span>© {year} Sylva Atelier. Grown in Bengaluru, shipped across India.</span>
+          <span>Prices inclusive of GST</span>
         </Container>
       </div>
     </footer>

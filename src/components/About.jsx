@@ -35,7 +35,7 @@ export default function About() {
   const inView = useInView(statsRef, { once: true, amount: 0.35 })
 
   return (
-    <section id="about" className="relative scroll-mt-24 overflow-hidden bg-cream py-16 sm:py-20 lg:py-24">
+    <section id="about" className="relative overflow-hidden bg-cream py-16 sm:py-20 lg:py-24">
       <div className="pointer-events-none absolute -right-20 top-20 h-64 w-64 rounded-full bg-sage/20 blur-3xl" />
       <Container className="grid items-center gap-12 lg:grid-cols-2 lg:gap-16">
         <Reveal className="relative">

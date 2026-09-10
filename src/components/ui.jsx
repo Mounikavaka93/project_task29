@@ -1,10 +1,17 @@
 import { motion } from 'framer-motion'
 import { useRef, useState } from 'react'
 
-export const containerClass =
-  'mx-auto w-full max-w-[1280px] px-4 sm:px-6 lg:px-8'
+export const containerClass = 'mx-auto w-full px-3 sm:px-4 lg:px-5'
 
-export const PRELOAD_MS = 1700
+export const PRELOAD_MS = 2200
+
+export function formatINR(amount) {
+  return new Intl.NumberFormat('en-IN', {
+    style: 'currency',
+    currency: 'INR',
+    maximumFractionDigits: 0,
+  }).format(amount)
+}
 
 export function Container({ children, className = '' }) {
   return <div className={`${containerClass} ${className}`}>{children}</div>

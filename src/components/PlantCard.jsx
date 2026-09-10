@@ -1,7 +1,7 @@
 import { Heart, ShoppingBag, Star } from 'lucide-react'
 import { motion } from 'framer-motion'
 import { useShop } from '../context/ShopContext'
-import { SmartImage, useTilt } from './ui'
+import { SmartImage, formatINR, useTilt } from './ui'
 
 export default function PlantCard({ plant, index = 0 }) {
   const { addToCart, toggleWishlist, isWishlisted } = useShop()
@@ -50,7 +50,7 @@ export default function PlantCard({ plant, index = 0 }) {
             {plant.name}
           </h3>
           <div className="mt-2 flex items-center justify-between gap-2">
-            <p className="text-sm font-semibold text-clay">${plant.price}</p>
+            <p className="text-sm font-semibold text-clay">{formatINR(plant.price)}</p>
             <p className="inline-flex items-center gap-0.5 text-xs text-pine/70" aria-label={`Rated ${plant.rating} out of 5`}>
               {Array.from({ length: 5 }).map((_, s) => (
                 <Star
@@ -62,6 +62,7 @@ export default function PlantCard({ plant, index = 0 }) {
               <span className="ml-1">{plant.rating}</span>
             </p>
           </div>
+          <p className="mt-1 text-[11px] text-moss">In stock · ships in 2–4 days</p>
           <button
             type="button"
             onClick={() => addToCart(plant)}

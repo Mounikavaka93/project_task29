@@ -1,7 +1,10 @@
 import { ArrowLeft, Banknote, CheckCircle2, CreditCard, Lock, Truck, Wallet } from 'lucide-react'
 import { useState } from 'react'
+import { formatINR } from './ui'
 
 const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
+
+const EXPRESS_FEE = 499
 
 const emptyForm = {
   name: '',
@@ -18,14 +21,14 @@ const emptyForm = {
 }
 
 const methods = [
-  { id: 'card', label: 'Card', hint: 'Visa, Mastercard', Icon: CreditCard },
-  { id: 'wallet', label: 'Wallet', hint: 'UPI / digital', Icon: Wallet },
+  { id: 'card', label: 'Card', hint: 'Visa, Mastercard, RuPay', Icon: CreditCard },
+  { id: 'wallet', label: 'UPI', hint: 'GPay, PhonePe, Paytm', Icon: Wallet },
   { id: 'cod', label: 'Cash on delivery', hint: 'Pay at the door', Icon: Banknote },
 ]
 
 const deliveries = [
   { id: 'standard', label: 'Standard crate', hint: '5–7 days · free', extra: 0, Icon: Truck },
-  { id: 'express', label: 'Express crate', hint: '2 days · +$12', extra: 12, Icon: Truck },
+  { id: 'express', label: 'Express crate', hint: `2 days · +${formatINR(EXPRESS_FEE)}`, extra: EXPRESS_FEE, Icon: Truck },
 ]
 
 function digits(value) {
@@ -52,7 +55,7 @@ export default function Checkout({ subtotal, onBack, onComplete }) {
   const [form, setForm] = useState(emptyForm)
   const [errors, setErrors] = useState({})
 
-  const shipping = form.delivery === 'express' ? 12 : 0
+  const shipping = form.delivery === 'express' ? EXPRESS_FEE : 0
   const total = subtotal + shipping
 
   const set = (key) => (e) => {
@@ -150,7 +153,7 @@ export default function Checkout({ subtotal, onBack, onComplete }) {
               autoComplete="name"
               aria-invalid={Boolean(errors.name)}
               className={fieldClass(errors.name)}
-              placeholder="Amelia Hart"
+              placeholder="Anita Sharma"
             />
           </Field>
           <Field label="Email" error={errors.email}>
@@ -161,7 +164,7 @@ export default function Checkout({ subtotal, onBack, onComplete }) {
               autoComplete="email"
               aria-invalid={Boolean(errors.email)}
               className={fieldClass(errors.email)}
-              placeholder="you@studio.com"
+              placeholder="anita@studio.in"
             />
           </Field>
           <Field label="Phone" error={errors.phone}>
@@ -172,7 +175,7 @@ export default function Checkout({ subtotal, onBack, onComplete }) {
               autoComplete="tel"
               aria-invalid={Boolean(errors.phone)}
               className={fieldClass(errors.phone)}
-              placeholder="4155550188"
+              placeholder="9876543210"
             />
           </Field>
           <Field label="Address" error={errors.address}>
@@ -183,7 +186,7 @@ export default function Checkout({ subtotal, onBack, onComplete }) {
               autoComplete="street-address"
               aria-invalid={Boolean(errors.address)}
               className={`${fieldClass(errors.address)} resize-y`}
-              placeholder="Street, city, postcode"
+              placeholder="House no., street, Bengaluru 560035"
             />
           </Field>
         </section>
@@ -224,7 +227,7 @@ export default function Checkout({ subtotal, onBack, onComplete }) {
                   autoComplete="cc-name"
                   aria-invalid={Boolean(errors.cardName)}
                   className={fieldClass(errors.cardName)}
-                  placeholder="A. Hart"
+                  placeholder="Anita Sharma"
                 />
               </Field>
               <Field label="Card number" error={errors.cardNumber}>
@@ -290,48 +293,49 @@ export default function Checkout({ subtotal, onBack, onComplete }) {
       <div className="mt-4 border-t border-sand pt-4">
         <div className="mb-1 flex justify-between text-sm">
           <span>Subtotal</span>
-          <span>${subtotal}</span>
+          <span>{formatINR(subtotal)}</span>
         </div>
         <div className="mb-3 flex justify-between text-sm">
           <span>Delivery</span>
-          <span>{shipping ? `$${shipping}` : 'Free'}</span>
+          <span>{shipping ? formatINR(shipping) : 'Free'}</span>
         </div>
         <div className="mb-3 flex justify-between text-sm font-semibold text-forest">
           <span>Total</span>
-          <span>${total}</span>
+          <span>{formatINR(total)}</span>
         </div>
         <button
           type="submit"
           className="btn-press w-full rounded-full bg-forest py-3 text-sm text-cream hover:bg-moss"
         >
-          {form.method === 'cod' ? `Place order · $${total}` : `Pay $${total}`}
+          {form.method === 'cod' ? `Place order · ${formatINR(total)}` : `Pay ${formatINR(total)}`}
         </button>
         <p className="mt-2 flex items-center justify-center gap-1 text-[11px] text-pine/50">
           <Lock size={11} />
-          Encrypted demo checkout — no charge is taken
+          256-bit SSL · prices inclusive of GST
         </p>
       </div>
     </form>
   )
 }
 
-export function OrderComplete({ total, onClose }) {
+export function OrderComplete({ total, orderId, onClose }) {
   return (
     <div className="flex h-full flex-col items-center justify-center px-4 text-center">
       <span className="mb-4 grid h-14 w-14 place-items-center rounded-full bg-mist text-moss">
         <CheckCircle2 size={28} />
       </span>
-      <h4 className="font-display text-2xl text-forest">The crate is packing</h4>
+      <h4 className="font-display text-2xl text-forest">Order confirmed</h4>
+      <p className="mt-2 font-mono text-xs uppercase tracking-[0.16em] text-moss">{orderId}</p>
       <p className="mt-2 max-w-xs text-sm leading-relaxed text-pine/70">
-        Order confirmed for ${total}. A horticulturist will water, wrap, and send tracking to your
-        inbox.
+        {formatINR(total)} received. A horticulturist will water, wrap, and email tracking from
+        Bengaluru within 24 hours.
       </p>
       <button
         type="button"
         onClick={onClose}
         className="btn-press mt-6 rounded-full bg-forest px-6 py-3 text-sm text-cream hover:bg-moss"
       >
-        Continue collecting
+        Continue shopping
       </button>
     </div>
   )

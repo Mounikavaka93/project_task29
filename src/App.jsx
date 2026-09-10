@@ -1,3 +1,4 @@
+import { ReactLenis } from 'lenis/react'
 import { ShopProvider } from './context/ShopContext'
 import Navbar from './components/Navbar'
 import Hero from './components/Hero'
@@ -16,7 +17,6 @@ import {
   CustomCursor,
   Marquee,
   Preloader,
-  ScrollVine,
   SearchOverlay,
   ToastStack,
   WishlistDrawer,
@@ -24,31 +24,35 @@ import {
 
 export default function App() {
   return (
-    <ShopProvider>
-      <div className="has-custom-cursor relative w-full max-w-full overflow-x-clip bg-cream">
-        <CustomCursor />
-        <Preloader />
-        <AmbientLeaves />
-        <ScrollVine />
-        <Navbar />
-        <main>
-          <Hero />
-          <Marquee />
-          <Categories />
-          <FeaturedPlants />
-          <About />
-          <WhyChooseUs />
-          <CareTips />
-          <Reviews />
-          <Newsletter />
-          <Contact />
-        </main>
-        <Footer />
-        <CartDrawer />
-        <WishlistDrawer />
-        <SearchOverlay />
-        <ToastStack />
-      </div>
-    </ShopProvider>
+    <ReactLenis
+      root
+      options={{ autoRaf: true, duration: 1.2, lerp: 0.08, smoothWheel: true }}
+    >
+      <ShopProvider>
+        <div className="has-custom-cursor relative w-full bg-cream">
+          <CustomCursor />
+          <Preloader />
+          <AmbientLeaves />
+          <Navbar />
+          <main>
+            <Hero />
+            <Marquee />
+            <Categories />
+            <FeaturedPlants />
+            <About />
+            <WhyChooseUs />
+            <CareTips />
+            <Reviews />
+            <Newsletter />
+            <Contact />
+          </main>
+          <Footer />
+          <CartDrawer />
+          <WishlistDrawer />
+          <SearchOverlay />
+          <ToastStack />
+        </div>
+      </ShopProvider>
+    </ReactLenis>
   )
 }

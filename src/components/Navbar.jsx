@@ -25,7 +25,7 @@ export default function Navbar() {
       let current = '#home'
       navLinks.forEach((link) => {
         const el = document.querySelector(link.href)
-        if (el && el.getBoundingClientRect().top <= 130) current = link.href
+        if (el && el.getBoundingClientRect().top <= 90) current = link.href
       })
       setActive(current)
     }
@@ -65,7 +65,7 @@ export default function Navbar() {
           transition={{ duration: 0.7, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
           className={`relative z-[60] flex items-center justify-between gap-2 py-2.5 sm:gap-3 sm:py-3 ${
             scrolled
-              ? 'rounded-full border border-sand/80 bg-cream/90 shadow-[0_10px_40px_rgba(18,38,27,0.08)] backdrop-blur-xl'
+              ? 'rounded-full border border-sand/80 bg-cream/90 px-3 shadow-[0_10px_40px_rgba(18,38,27,0.08)] backdrop-blur-xl sm:px-4'
               : 'bg-transparent'
           }`}
           aria-label="Primary"
@@ -118,7 +118,7 @@ export default function Navbar() {
                   e.preventDefault()
                   go(link.href)
                 }}
-                className={`relative whitespace-nowrap text-sm transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:bg-gold after:transition-all ${
+                className={`relative whitespace-nowrap text-sm leading-none transition-colors after:absolute after:-bottom-1 after:left-0 after:h-px after:bg-gold after:transition-all ${
                   active === link.href ? 'after:w-full' : 'after:w-0 hover:after:w-full'
                 } ${
                   light
@@ -183,10 +183,12 @@ export default function Navbar() {
         {menuOpen && (
           <motion.div
             id="mobile-nav"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+            initial={{ clipPath: 'circle(0% at calc(100% - 2.4rem) 2rem)', opacity: 0.6 }}
+            animate={{ clipPath: 'circle(150% at calc(100% - 2.4rem) 2rem)', opacity: 1 }}
+            exit={{ clipPath: 'circle(0% at calc(100% - 2.4rem) 2rem)', opacity: 0 }}
+            transition={{ duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
             className="fixed inset-0 z-[55] overflow-y-auto bg-forest/95 px-6 pb-10 pt-28 backdrop-blur-xl lg:hidden"
+            data-lenis-prevent
           >
             <div className="absolute inset-0 grain pointer-events-none opacity-40" />
             <nav className="relative mx-auto flex max-w-sm flex-col gap-5" aria-label="Mobile">
@@ -198,10 +200,10 @@ export default function Navbar() {
                     e.preventDefault()
                     go(link.href)
                   }}
-                  initial={{ opacity: 0, x: -24 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: 0.07 * i, duration: 0.4 }}
-                  className={`font-display text-4xl leading-none ${
+                  initial={{ opacity: 0, y: 28, rotateX: 70, filter: 'blur(8px)' }}
+                  animate={{ opacity: 1, y: 0, rotateX: 0, filter: 'blur(0px)' }}
+                  transition={{ delay: 0.12 + 0.07 * i, duration: 0.55, ease: [0.22, 1, 0.36, 1] }}
+                  className={`origin-left font-display text-4xl leading-none ${
                     active === link.href ? 'text-gold' : 'text-cream'
                   }`}
                 >

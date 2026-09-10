@@ -1,6 +1,7 @@
 import { motion } from 'framer-motion'
 import { Mail, MapPin, Phone } from 'lucide-react'
 import { useState } from 'react'
+import { studio } from '../data/content'
 import { Container } from './ui'
 
 const emailOk = (v) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v)
@@ -37,7 +38,7 @@ export default function Contact() {
   })
 
   return (
-    <section id="contact" className="scroll-mt-24 bg-cream py-16 sm:py-20 lg:py-24">
+    <section id="contact" className="bg-cream py-16 sm:py-20 lg:py-24">
       <Container className="grid gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
         <div className="min-w-0">
           <p className="mb-3 text-[11px] font-semibold uppercase tracking-[0.28em] text-moss">
@@ -54,16 +55,25 @@ export default function Contact() {
           <ul className="mt-8 space-y-4 text-sm text-pine">
             <li className="flex items-start gap-3">
               <MapPin className="mt-0.5 h-4 w-4 shrink-0 text-gold" />
-              <span>18 River Meadow Lane, Glasshouse No. 4</span>
+              <span>
+                {studio.line1}
+                <br />
+                {studio.line2}
+              </span>
             </li>
             <li className="flex items-center gap-3">
               <Phone className="h-4 w-4 shrink-0 text-gold" />
-              <span>+1 (415) 555-0188</span>
+              <a href={`tel:${studio.phone.replace(/\s/g, '')}`} className="hover:text-forest">
+                {studio.phone}
+              </a>
             </li>
             <li className="flex items-center gap-3">
               <Mail className="h-4 w-4 shrink-0 text-gold" />
-              <span>hello@sylvatelier.com</span>
+              <a href={`mailto:${studio.email}`} className="hover:text-forest">
+                {studio.email}
+              </a>
             </li>
+            <li className="text-pine/70">{studio.hours}</li>
           </ul>
         </div>
 

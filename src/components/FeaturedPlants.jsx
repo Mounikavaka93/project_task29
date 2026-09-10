@@ -12,7 +12,7 @@ export default function FeaturedPlants() {
     useShop()
 
   return (
-    <section id="plants" className="scroll-mt-24 bg-mist/60 py-16 sm:py-20 lg:py-24">
+    <section id="plants" className="bg-mist/60 py-16 sm:py-20 lg:py-24">
       <Container>
         <SectionHeading
           eyebrow="Featured Plants"

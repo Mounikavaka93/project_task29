@@ -1,11 +1,37 @@
 import { createContext, useContext, useEffect, useMemo, useState } from 'react'
+import { useLenis } from 'lenis/react'
 import { plants } from '../data/content'
 
 const ShopContext = createContext(null)
 
+function readStore(key, fallback) {
+  try {
+    const raw = localStorage.getItem(key)
+    return raw ? JSON.parse(raw) : fallback
+  } catch {
+    return fallback
+  }
+}
+
+function writeStore(key, value) {
+  try {
+    localStorage.setItem(key, JSON.stringify(value))
+  } catch {
+    /* ignore quota / private mode */
+  }
+}
+
+function offsetFor(el, id) {
+  if (id === '#home') return 0
+  const header = document.querySelector('header')
+  const navH = header ? header.getBoundingClientRect().height : 64
+  const pad = parseFloat(window.getComputedStyle(el).paddingTop) || 0
+  return pad - navH - 8
+}
+
 export function ShopProvider({ children }) {
-  const [cart, setCart] = useState([])
-  const [wishlist, setWishlist] = useState([])
+  const [cart, setCart] = useState(() => readStore('sylva-cart', []))
+  const [wishlist, setWishlist] = useState(() => readStore('sylva-wishlist', []))
   const [toasts, setToasts] = useState([])
   const [activeCategory, setActiveCategory] = useState('All')
   const [searchQuery, setSearchQuery] = useState('')
@@ -13,6 +39,10 @@ export function ShopProvider({ children }) {
   const [wishlistOpen, setWishlistOpen] = useState(false)
   const [searchOpen, setSearchOpen] = useState(false)
   const [menuOpen, setMenuOpen] = useState(false)
+  const lenis = useLenis()
+
+  useEffect(() => writeStore('sylva-cart', cart), [cart])
+  useEffect(() => writeStore('sylva-wishlist', wishlist), [wishlist])
 
   const pushToast = (message) => {
     const id = `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`
@@ -75,20 +105,28 @@ export function ShopProvider({ children }) {
   useEffect(() => {
     const locked = cartOpen || wishlistOpen || searchOpen || menuOpen
     document.body.style.overflow = locked ? 'hidden' : ''
-    document.documentElement.style.overflowY = locked ? 'hidden' : ''
-    document.documentElement.style.overflowX = 'clip'
+    document.documentElement.style.overflow = locked ? 'hidden' : ''
+    if (locked) lenis?.stop()
+    else lenis?.start()
     return () => {
       document.body.style.overflow = ''
-      document.documentElement.style.overflowY = ''
-      document.documentElement.style.overflowX = 'clip'
+      document.documentElement.style.overflow = ''
+      lenis?.start()
     }
-  }, [cartOpen, wishlistOpen, searchOpen, menuOpen])
+  }, [cartOpen, wishlistOpen, searchOpen, menuOpen, lenis])
 
   const scrollTo = (id) => {
     setMenuOpen(false)
     setSearchOpen(false)
     const el = document.querySelector(id)
-    if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    if (!el) return
+    const offset = offsetFor(el, id)
+    if (lenis) {
+      lenis.scrollTo(el, { offset, duration: 0.85 })
+      return
+    }
+    const top = el.getBoundingClientRect().top + window.scrollY + offset
+    window.scrollTo({ top: Math.max(0, top), behavior: 'smooth' })
   }
 
   const value = {
